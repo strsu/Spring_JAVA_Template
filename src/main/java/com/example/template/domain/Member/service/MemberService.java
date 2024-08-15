@@ -3,6 +3,8 @@ package com.example.template.domain.Member.service;
 import com.example.template.domain.Member.entity.Member;
 import com.example.template.domain.Member.repository.MemberRepository;
 import com.example.template.domain.Member.repository.dto.MemberDto;
+import com.example.template.global.error.ErrorCode;
+import com.example.template.global.error.exception.EntityAlreadyExistException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -27,8 +29,9 @@ public class MemberService {
 
     @Transactional
     public Member signup(MemberDto memberDto) {
-        if (memberRepository.findByEmail(memberDto.getEmail()).orElse(null) != null) {
-            throw new RuntimeException("이미 가입되어 있는 유저입니다.");
+
+        if (memberRepository.findByEmail(memberDto.getEmail()).isPresent()) {
+            throw new EntityAlreadyExistException(ErrorCode.MEMBER_ALREADY_EXIST);
         }
 
         // 유저 정보를 만들어서 save
