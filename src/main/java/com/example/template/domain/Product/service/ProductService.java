@@ -38,16 +38,6 @@ public class ProductService {
     @Transactional
     public ProductResponseDto uploadProduct(ProductRequestDto productRequestDto) {
 
-        /*
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            Member member;
-            if (authentication != null && authentication.getPrincipal() instanceof Member) {
-                member = (Member) authentication.getPrincipal();
-            } else {
-                throw new EntityNotFoundException(ErrorCode.MEMBER_NOT_FOUND);
-            }
-        * */
-
         Member loginMember = authUtil.getLoginMember();
 
         ProductCategory productCategory = productCategoryService.getItemCategory(productRequestDto.getItemCategoryId());
@@ -63,15 +53,7 @@ public class ProductService {
 
         productRepository.save(product);
 
-        return ProductResponseDto.builder()
-                .id(product.getId())
-                .title(product.getTitle())
-                .content(product.getContent())
-                .price(product.getPrice())
-                .isNego(product.isNego())
-                .itemCategoryId(product.getProductCategory().getId())
-                .memberUUID(product.getMember().getUuid())
-                .build();
+        return this.mapToProductResponseDto(product, 0L);
     }
 
     public Page<ProductResponseDto> getProducts(int pageNo, int pageSize) {
@@ -103,16 +85,8 @@ public class ProductService {
         }
 
         List<ProductResponseDto> itemDtos = itemPage.stream()
-                .map(product -> new ProductResponseDto(
-                        product.getId(),
-                        product.getTitle(),
-                        product.getContent(),
-                        product.getPrice(),
-                        product.isNego(),
-                        product.getProductCategory().getId(),
-                        product.getMember().getUuid(),
-                        viewCountMap.getOrDefault(product.getId(), 0L)
-                ))
+                .map(product -> this.mapToProductResponseDto(
+                        product, viewCountMap.getOrDefault(product.getId(), 0L)))
                 .collect(Collectors.toList());
 
         // Page<ItemDto>로 변환하여 반환
@@ -126,8 +100,8 @@ public class ProductService {
                 () -> new EntityNotFoundException(ErrorCode.PRODUCT_NOT_FOUND));
 
         // 자신의 게시물이 아니라면
-        if(product.getMember() != loginMember) {
-            if(productViewRepository.findByMemberAndProduct(loginMember, product).isEmpty()) {
+        if (loginMember.getId() != product.getMember().getId()) {
+            if (!productViewRepository.existsByMemberAndProduct(loginMember, product)) {
                 // 조회 기록을 남김
                 ProductView productView = ProductView.builder()
                         .member(loginMember)
@@ -139,6 +113,10 @@ public class ProductService {
 
         long viewCnt = productViewRepository.countByProductId(id);
 
+        return this.mapToProductResponseDto(product, viewCnt);
+    }
+
+    private ProductResponseDto mapToProductResponseDto(Product product, Long viewCount) {
         return ProductResponseDto.builder()
                 .id(product.getId())
                 .title(product.getTitle())
@@ -147,7 +125,7 @@ public class ProductService {
                 .isNego(product.isNego())
                 .memberUUID(product.getMember().getUuid())
                 .itemCategoryId(product.getProductCategory().getId())
-                .viewCnt(viewCnt)
+                .viewCnt(viewCount)
                 .build();
     }
 }

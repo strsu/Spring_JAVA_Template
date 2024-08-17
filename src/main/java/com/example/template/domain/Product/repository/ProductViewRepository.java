@@ -14,7 +14,7 @@ import java.util.Optional;
 
 @Repository
 public interface ProductViewRepository extends JpaRepository<ProductView, Long> {
-    Optional<ProductView> findByMemberAndProduct(Member member, Product product);
+    boolean existsByMemberAndProduct(Member member, Product product);
     long countByProductId(Long productId);
     // 여러 제품 ID에 대한 조회 횟수를 가져오는 쿼리
     @Query("SELECT pv.product.id AS productId, COUNT(pv) AS viewCount " +
