@@ -21,14 +21,14 @@ public abstract class TimeStamp {
     @CreatedDate
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at", updatable = false)
-    private java.util.Date created_at;
+    private java.util.Date createdAt;
 
     @LastModifiedDate
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "modified_at", updatable = true)
-    private java.util.Date modified_at;
+    @Column(name = "modified_at")
+    private java.util.Date modifiedAt;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "deleted_at")
-    private java.util.Date deleted_at;
+    private java.util.Date deletedAt;
 }
