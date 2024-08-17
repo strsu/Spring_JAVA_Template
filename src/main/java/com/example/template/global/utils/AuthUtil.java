@@ -5,6 +5,7 @@ import com.example.template.domain.Member.repository.MemberRepository;
 import com.example.template.global.error.ErrorCode;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
@@ -14,30 +15,18 @@ public class AuthUtil {
 
     private final MemberRepository memberRepository;
 
-    public Long getLoginMemberIdOrNull() {
-        try {
-            final String memberId = SecurityContextHolder.getContext().getAuthentication().getName();
-            return Long.valueOf(memberId);
-        } catch (Exception e) {
-            return -1L;
-        }
-    }
-
     public Long getLoginMemberId() {
-        try {
-            final String memberId = SecurityContextHolder.getContext().getAuthentication().getName();
-            return Long.valueOf(memberId);
-        } catch (Exception e) {
-            throw new RuntimeException();
-        }
+        Member member = this.getLoginMember();
+        return member.getId();
     }
 
     public Member getLoginMember() {
-        try {
-            final String memberId = SecurityContextHolder.getContext().getAuthentication().getName();
-            return memberRepository.findByEmail(memberId).orElseThrow(() -> new EntityNotFoundException(ErrorCode.MEMBER_NOT_FOUND.getMessage()));
-        } catch (Exception e) {
-            throw new RuntimeException();
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getPrincipal() instanceof Member) {
+            return (Member) authentication.getPrincipal();
+        } else {
+            throw new EntityNotFoundException(ErrorCode.MEMBER_NOT_FOUND.getMessage());
         }
     }
 }
