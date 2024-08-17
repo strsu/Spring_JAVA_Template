@@ -47,7 +47,7 @@ public class SecurityConfig {
                 .and()
                 .authorizeHttpRequests() // HttpServletRequest를 사용하는 요청들에 대한 접근제한을 설정하겠다.
                 .requestMatchers("/api/member/**").permitAll() // 회원가입 api
-                .requestMatchers("/api/item/list").permitAll() // 회원가입 api
+                .requestMatchers("/api/product/list").permitAll() // 회원가입 api
                 .anyRequest().authenticated() // 그 외 인증 없이 접근X
                 .and()
                 .httpBasic(); // For Basic

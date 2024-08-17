@@ -24,4 +24,5 @@ public class ProductResponseDto {
     private boolean isNego;
     private long itemCategoryId;
     private UUID memberUUID;
+    private long viewCnt;
 }

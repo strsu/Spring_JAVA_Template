@@ -15,7 +15,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/item") // 하위 Controller에 모두 /api/ 이 붙는다
+@RequestMapping("/api/product") // 하위 Controller에 모두 /api/ 이 붙는다
 public class ProductController {
 
     private final ProductService productService;
@@ -32,13 +32,18 @@ public class ProductController {
             @RequestParam(defaultValue = "0") int pageNo,
             @RequestParam(defaultValue = "10") int pageSize) {
 
-        Page<ProductResponseDto> products = productService.getItems(pageNo, pageSize);
+        Page<ProductResponseDto> products = productService.getProducts(pageNo, pageSize);
         return ResponseEntity.ok(products);
+    }
+
+    @GetMapping("/{productId}/detail")
+    public ProductResponseDto viewProduct(@PathVariable Long productId) {
+        return productService.getProductDetail(productId);
     }
 
     @PostMapping("/upload")
     @ResponseBody
     public ProductResponseDto itemUpload(@Valid @RequestBody ProductRequestDto productRequestDto) {
-        return productService.uploadItem(productRequestDto);
+        return productService.uploadProduct(productRequestDto);
     }
 }

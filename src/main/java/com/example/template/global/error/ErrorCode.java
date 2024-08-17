@@ -30,11 +30,11 @@ public enum ErrorCode {
     MEMBER_NOT_FOUND(400, "M001", "존재 하지 않는 유저입니다."),
     MEMBER_ALREADY_EXIST(400, "M002", "이미 등록된 유저입니다."),
 
-    // MemberGroup
-    MEMBER_GROUP_NOT_FOUND(400, "MG001", "사용자의 소속을 찾을 수 없습니다."),
+    // Product
+    PRODUCT_NOT_FOUND(404, "P001", "상품을 찾을 수 없습니다."),
 
-    // Resource
-    ITEM_CATEGORY_NOT_FOUND(400, "IC001", "카테고리를 찾을 수 없습니다."),
+    // Item Category
+    ITEM_CATEGORY_NOT_FOUND(404, "IC001", "카테고리를 찾을 수 없습니다."),
 
     // Jwt
     JWT_INVALID(401, "J001", "유효하지 않은 토큰입니다."),
