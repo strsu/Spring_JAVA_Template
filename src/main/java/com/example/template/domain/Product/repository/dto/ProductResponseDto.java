@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 /*
 * @Data = @Getter, @Setter, @RequiredArgsConstructor, @ToString, @EqualsAndHashCode
 * 5개를 포함
@@ -21,5 +23,5 @@ public class ProductResponseDto {
     private long price;
     private boolean isNego;
     private long itemCategoryId;
-    private long memberId;
+    private UUID memberUUID;
 }

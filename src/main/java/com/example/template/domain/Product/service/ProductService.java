@@ -65,7 +65,7 @@ public class ProductService {
                 .price(product.getPrice())
                 .isNego(product.isNego())
                 .itemCategoryId(product.getProductCategory().getId())
-                .memberId(product.getMember().getId())
+                .memberUUID(product.getMember().getUuid())
                 .build();
     }
 
@@ -90,7 +90,7 @@ public class ProductService {
                         product.getPrice(),
                         product.isNego(),
                         product.getProductCategory().getId(),
-                        product.getMember().getId()
+                        product.getMember().getUuid()
                 ))
                 .collect(Collectors.toList());
 
