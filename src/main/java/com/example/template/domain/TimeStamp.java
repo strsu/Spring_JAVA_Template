@@ -25,7 +25,7 @@ public abstract class TimeStamp {
 
     @LastModifiedDate
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "modified_at", updatable = false)
+    @Column(name = "modified_at", updatable = true)
     private java.util.Date modified_at;
 
     @Temporal(TemporalType.TIMESTAMP)

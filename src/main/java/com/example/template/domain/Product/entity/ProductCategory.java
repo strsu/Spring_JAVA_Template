@@ -1,4 +1,4 @@
-package com.example.template.domain.Item.entity;
+package com.example.template.domain.Product.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -9,13 +9,13 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ItemCategory {
+public class ProductCategory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(length = 64, nullable = false)
-    private String title;
+    @Column(length = 64, nullable = false, unique = true)
+    private String name;
 
 }

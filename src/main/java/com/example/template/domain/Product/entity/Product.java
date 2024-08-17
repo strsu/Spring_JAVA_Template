@@ -1,4 +1,4 @@
-package com.example.template.domain.Item.entity;
+package com.example.template.domain.Product.entity;
 
 import com.example.template.domain.Member.entity.Member;
 import com.example.template.domain.TimeStamp;
@@ -12,7 +12,7 @@ import org.springframework.data.geo.Point;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Item extends TimeStamp {
+public class Product extends TimeStamp {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -23,7 +23,7 @@ public class Item extends TimeStamp {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
-    private ItemCategory itemCategory;
+    private ProductCategory productCategory;
 
     @Column(length = 64, nullable = false)
     private String title;
