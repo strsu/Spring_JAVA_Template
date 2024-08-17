@@ -34,10 +34,7 @@ public enum ErrorCode {
     MEMBER_GROUP_NOT_FOUND(400, "MG001", "사용자의 소속을 찾을 수 없습니다."),
 
     // Resource
-    RESOURCE_NOT_FOUND(400, "R001", "존재하지 않는 발전소입니다."),
-
-    // ResourceGroup
-    RESOURCE_GROUP_NOT_FOUND(400, "RG001", "존재하지 않는 집합자원입니다."),
+    ITEM_CATEGORY_NOT_FOUND(400, "IC001", "카테고리를 찾을 수 없습니다."),
 
     // Jwt
     JWT_INVALID(401, "J001", "유효하지 않은 토큰입니다."),

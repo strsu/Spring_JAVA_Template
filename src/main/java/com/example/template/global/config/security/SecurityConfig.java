@@ -1,6 +1,8 @@
 package com.example.template.global.config.security;
 
+import com.example.template.domain.Member.service.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -12,7 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
-@EnableWebSecurity // 스프링 Security 지원을 가능하게 함
+@EnableWebSecurity // FilterChainProxy를 스프링 필터체인에 등록한다, 스프링 Security 지원을 가능하게 함
 @RequiredArgsConstructor
 public class SecurityConfig {
 
@@ -21,6 +23,7 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+    // SecurityFilterChain을 등록한다.
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
@@ -28,11 +31,10 @@ public class SecurityConfig {
                 .csrf().disable()
 
                 // Auth가 없을 때 response status를 결정함
-                .exceptionHandling()
                 // Auth가 없다고 이후 로직이 실행이 안되는 것은 아니다.
-
-                // enable h2-console
+                .exceptionHandling()
                 .and()
+
                 .headers()
                 .frameOptions()
                 .sameOrigin()
@@ -45,8 +47,10 @@ public class SecurityConfig {
                 .and()
                 .authorizeHttpRequests() // HttpServletRequest를 사용하는 요청들에 대한 접근제한을 설정하겠다.
                 .requestMatchers("/api/member/**").permitAll() // 회원가입 api
-                .anyRequest().authenticated(); // 그 외 인증 없이 접근X
-
+                .requestMatchers("/api/item/list").permitAll() // 회원가입 api
+                .anyRequest().authenticated() // 그 외 인증 없이 접근X
+                .and()
+                .httpBasic(); // For Basic
 
         return httpSecurity.build();
     }

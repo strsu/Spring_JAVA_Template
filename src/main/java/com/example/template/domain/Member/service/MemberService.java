@@ -1,7 +1,9 @@
 package com.example.template.domain.Member.service;
 
 import com.example.template.domain.Member.entity.Member;
+import com.example.template.domain.Member.entity.MemberRole;
 import com.example.template.domain.Member.repository.MemberRepository;
+import com.example.template.domain.Member.repository.MemberRoleRepository;
 import com.example.template.domain.Member.repository.dto.MemberDto;
 import com.example.template.global.error.ErrorCode;
 import com.example.template.global.error.exception.EntityAlreadyExistException;
@@ -11,13 +13,16 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 
 @Service
 @RequiredArgsConstructor
 public class MemberService {
     private final MemberRepository memberRepository;
+    private final MemberRoleRepository memberRoleRepository;
     private final PasswordEncoder passwordEncoder; // config폴더 밑에 SecurityConfig를 정의해야 사용가능
 
     @Transactional(readOnly = true)
@@ -34,12 +39,22 @@ public class MemberService {
             throw new EntityAlreadyExistException(ErrorCode.MEMBER_ALREADY_EXIST);
         }
 
+        Optional<MemberRole> optionalRole = memberRoleRepository.findByAuthority("ROLE_USER");
+        if(optionalRole.isEmpty()) {
+            throw new EntityNotFoundException("Role을 찾을 수 없습니다.");
+        }
+
+        MemberRole memberRole = optionalRole.get();
+        Set<MemberRole> memberRoles = new HashSet<>();
+        memberRoles.add(memberRole);
+
         // 유저 정보를 만들어서 save
         Member member = Member.builder()
                 .username(memberDto.getUsername())
                 .password(passwordEncoder.encode(memberDto.getPassword()))
                 .email(memberDto.getEmail())
                 .activated(true)
+                .authorities(memberRoles)
                 .build();
 
         return memberRepository.save(member);
