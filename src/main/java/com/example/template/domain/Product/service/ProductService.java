@@ -8,6 +8,7 @@ import com.example.template.domain.Product.repository.dto.ProductResponseDto;
 import com.example.template.domain.Member.entity.Member;
 import com.example.template.global.error.ErrorCode;
 import com.example.template.global.error.exception.EntityNotFoundException;
+import com.example.template.global.utils.AuthUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -26,19 +27,24 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ProductService {
 
+    private final AuthUtil authUtil;
     private final ProductRepository productRepository;
     private final ProductCategoryService productCategoryService;
 
     @Transactional
     public ProductResponseDto uploadItem(ProductRequestDto productRequestDto) {
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Member member;
-        if (authentication != null && authentication.getPrincipal() instanceof Member) {
-            member = (Member) authentication.getPrincipal();
-        } else {
-            throw new EntityNotFoundException(ErrorCode.MEMBER_NOT_FOUND);
-        }
+        /*
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            Member member;
+            if (authentication != null && authentication.getPrincipal() instanceof Member) {
+                member = (Member) authentication.getPrincipal();
+            } else {
+                throw new EntityNotFoundException(ErrorCode.MEMBER_NOT_FOUND);
+            }
+        * */
+
+        Member loginMember = authUtil.getLoginMember();
 
         ProductCategory productCategory = productCategoryService.getItemCategory(productRequestDto.getItemCategoryId());
 
@@ -48,7 +54,7 @@ public class ProductService {
                 .price(productRequestDto.getPrice())
                 .isNego(productRequestDto.isNego())
                 .productCategory(productCategory)
-                .member(member)
+                .member(loginMember)
                 .build();
 
         productRepository.save(product);

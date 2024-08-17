@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.Set;
+import java.util.UUID;
 
 /*
 * Django에서 User 모델을 생성할 때 AbstractBaseUser, PermissionsMixin 을 상속 하듯,
@@ -31,6 +32,10 @@ public class Member extends TimeStamp implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+    
+    // JWT 인증에는 id 말고, uuid를 사용하기 위함
+    @Column(name = "uuid", unique = true, nullable = false, updatable = false)
+    private UUID uuid;
 
     @Column(name="email", length = 64, nullable = false, unique = true)
     private String email;
@@ -46,6 +51,13 @@ public class Member extends TimeStamp implements UserDetails {
     @JsonIgnore
     @Column(name = "activated")
     private boolean activated;
+
+    @PrePersist
+    public void prePersist() {
+        if (uuid == null) {
+            uuid = UUID.randomUUID(); // UUID를 자동으로 생성하여 설정
+        }
+    }
 
     // ##############################################
 
